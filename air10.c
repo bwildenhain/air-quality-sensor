@@ -43,6 +43,7 @@ read_one_sensor (struct libusb_device *dev)
 						"\x52\x0a\x40\x40"
 						"\x40\x40\x40\x40"
 						"\x40\x40\x40\x40";
+	struct libusb_device *uplink;
 
 	/* Open USB device.  */
 	ret = libusb_open (dev, &devh);
@@ -111,10 +112,10 @@ read_one_sensor (struct libusb_device *dev)
 	else
 		colour = RED;
 
-	printf ("Device %d/%d/%d, value = %u, quality = %s\n",
-		libusb_get_bus_number (dev),
-		libusb_get_port_number (dev),
-		libusb_get_device_address (dev),
+	printf ("Device ");
+	for (uplink = dev; uplink; uplink = libusb_get_parent (uplink))
+		printf ("%d:", libusb_get_port_number (uplink));
+	printf (" value = %u, quality = %s\n",
 		(unsigned int) value, air_quality[colour]);
 
 out_unlock:
