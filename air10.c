@@ -112,6 +112,7 @@ read_one_sensor (struct libusb_device *dev)
 	else
 		colour = RED;
 
+	/* Output values.  */
 	printf ("Device ");
 	for (uplink = dev; uplink; uplink = libusb_get_parent (uplink))
 		printf ("%d:", libusb_get_port_number (uplink));
