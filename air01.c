@@ -7,6 +7,7 @@
 #define DRIVER_NAME_LEN	1024
 #define USB_BUF_LEN	1024
 
+#define AQ_BLINK	450
 #define AQ_GREEN	1000
 #define AQ_YELLOW	1500
 #define AQ_RED		4000
@@ -18,14 +19,14 @@ enum led_state {
 	GREEN = 0,
 	YELLOW,
 	RED,
-	UNKNOWN,
+	BLINK,
 };
 
 static const char * const air_quality[] = {
 	[GREEN]		= "GREEN",
 	[YELLOW]	= "YELLOW",
 	[RED]		= "RED",
-	[UNKNOWN]	= "UNKNOWN",
+	[BLINK]		= "BLINK",
 };
 
 
@@ -41,7 +42,6 @@ read_one_sensor (struct usb_device *dev)
 					"\x52\x0a\x40\x40"
 					"\x40\x40\x40\x40"
 					"\x40\x40\x40\x40";
-	unsigned int highbit;
 
 	/* Open USB device.  */
 	devh = usb_open (dev);
@@ -83,41 +83,41 @@ read_one_sensor (struct usb_device *dev)
 	}
 
 	/* Read answer.  */
-	do {
-		printf ("read\n");
+	ret = usb_interrupt_read (devh, 0x0081/*endpoint*/,
+				  usb_io_buf, 0x10/*len*/, 1000/*msec*/);
+	if (ret < 0) {
+		fprintf (stderr, "Failed to usb_interrupt_read() #1\n");
+		ret = -5;
+		goto out_unlock;
+	}
+
+	/* On empty read, read again.  */
+	if (ret == 0) {
 		ret = usb_interrupt_read (devh, 0x0081/*endpoint*/,
 					  usb_io_buf, 0x10/*len*/, 1000/*msec*/);
-		if (ret < 0) {
-			fprintf (stderr, "Failed to usb_interrupt_read() #1\n");
-			ret = -5;
-			goto out_unlock;
-		} else if (ret != 0x10) {
-			fprintf (stderr, "usb_interrupt_read() returned %d\n", ret);
-		}
-	} while (ret != 0x10 /* == len */);
+	}
 
 	/* Prepare value from first read.  */
 	value =   ((unsigned char *) usb_io_buf)[3] << 8
 		| ((unsigned char *) usb_io_buf)[2] << 0;
 
-	/* Mask off MSB from `value'.  */
-	highbit = !! (value & 0x8000);
-	value = abs ((int16_t) value);
+	/* Dummy read.  */
+	ret = usb_interrupt_read (devh, 0x0081/*endpoint*/,
+				  usb_io_buf, 0x10/*len*/, 1000/*msec*/);
 
 	/* Classify `value'.  */
-	if (value <= AQ_GREEN)
+	if (value == AQ_BLINK)
+		colour = BLINK;
+	else if (value <= AQ_GREEN)
 		colour = GREEN;
 	else if (value <= AQ_YELLOW)
 		colour = YELLOW;
-	else if (value < 15000)
-		colour = RED;
 	else
-		colour = UNKNOWN;
+		colour = RED;
 
-	printf ("Device %s:%d, highbit=%u value = %u, quality = %s\n",
+	printf ("Device %s:%d,value = %u, quality = %s\n",
 		dev->bus->dirname,
 		dev->devnum,
-		highbit,
 		(unsigned int) value, air_quality[colour]);
 
 out_unlock:
