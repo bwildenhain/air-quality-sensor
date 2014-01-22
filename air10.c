@@ -77,7 +77,7 @@ read_one_sensor (struct libusb_device *dev)
 	ret = libusb_interrupt_transfer (devh, 0x0002/*endpoint*/,
 				   usb_io_buf, 0x10/*len*/, &len, 1000/*msec*/);
 	if (ret < 0) {
-		fprintf (stderr, "Failed to usb_interrupt_write() the initial buffer, ret = %d = %s\n", ret, libusb_strerror (ret));
+		fprintf (stderr, "Failed to usb_interrupt_write() the initial buffer, ret = %d\n", ret);
 		ret = -4;
 		goto out_unlock;
 	}
@@ -95,16 +95,7 @@ read_one_sensor (struct libusb_device *dev)
 	if (ret == 0) {
 		ret = libusb_interrupt_transfer (devh, 0x0081/*endpoint*/,
 					  usb_io_buf, 0x10/*len*/, &len, 1000/*msec*/);
-		if (ret != 0x10/* == len */) {
-			fprintf (stderr, "Failed to usb_interrupt_read() #2\n");
-			ret = -6;
-			goto out_unlock;
-		}
 	}
-
-	/* Dummy read. Needed for unknown reason.  */
-	ret = libusb_interrupt_transfer (devh, 0x0081/*endpoint*/,
-				  usb_io_buf, 0x10/*len*/, &len, 1000/*msec*/);
 
 	/* Prepare value from first read.  */
 	value =   ((unsigned char *) usb_io_buf)[3] << 8
@@ -120,8 +111,9 @@ read_one_sensor (struct libusb_device *dev)
 	else
 		colour = RED;
 
-	printf ("Device %d/%d, value = %u, quality = %s\n",
+	printf ("Device %d/%d/%d, value = %u, quality = %s\n",
 		libusb_get_bus_number (dev),
+		libusb_get_port_number (dev),
 		libusb_get_device_address (dev),
 		(unsigned int) value, air_quality[colour]);
 
@@ -159,11 +151,6 @@ find_devices (int vendor, int product) {
 		
 		libusb_free_device_list (devs, 1);
 	}
-
-//	for (bus = usb_get_busses (); bus; bus = bus->next)
-//		for (dev = bus->devices; dev; dev = dev->next)
-//			if (dev->descriptor.idVendor == vendor
-//			    && dev->descriptor.idProduct == product)
 
 	return ret;
 }
