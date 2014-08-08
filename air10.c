@@ -181,6 +181,9 @@ main (int argc, char *argv[])
 {
 	int ret;
 
+        if (argc > 1) {                                                                                     fprintf (stderr, "Usage: %s - prints current air quality\n", argv[0]);
+                exit (EXIT_FAILURE);                                                                }
+
 	ret = libusb_init (NULL);
 	if (ret) {
 		fprintf (stderr, "Failed to libusb_init()\n");

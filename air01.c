@@ -169,6 +169,11 @@ main (int argc, char *argv[])
 {
 	int ret;
 
+	if (argc > 1) {
+		fprintf (stderr, "Usage: %s - prints current air quality\n", argv[0]);
+		exit (EXIT_FAILURE);
+	}
+
 	usb_init ();
 	usb_set_debug (0);
 	usb_find_busses ();
