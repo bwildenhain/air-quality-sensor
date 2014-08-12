@@ -26,10 +26,10 @@
 #define DRIVER_NAME_LEN	1024
 #define USB_BUF_LEN	1024
 
-#define AQ_BLINK	450
-#define AQ_GREEN	1000
-#define AQ_YELLOW	1500
-#define AQ_RED		4000
+#define LEVEL_GREEN	1000
+#define LEVEL_YELLOW	1500
+#define LEVEL_RED	4000
+#define LEVEL_BOOTUP	450
 
 #define USB_VENDOR_CO2_STICK	0x03eb
 #define USB_PRODUCT_CO2_STICK	0x2013
@@ -125,11 +125,11 @@ read_one_sensor (struct usb_device *dev)
 				  usb_io_buf, 0x10/*len*/, 1000/*msec*/);
 
 	/* Classify `value'.  */
-	if (value == AQ_BLINK)
+	if (value == LEVEL_BOOTUP)
 		colour = BLINK;
-	else if (value <= AQ_GREEN)
+	else if (value <= LEVEL_GREEN)
 		colour = GREEN;
-	else if (value <= AQ_YELLOW)
+	else if (value <= LEVEL_YELLOW)
 		colour = YELLOW;
 	else
 		colour = RED;
