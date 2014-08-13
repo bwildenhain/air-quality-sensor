@@ -4,6 +4,12 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 PKG_CHECK_MODULES([LIBUSB1_0], [libusb-1.0])
 
+AC_CHECK_FUNCS(getopt_long)
+
+dnl Copyright will apply as long as these sources are in use, e.g., are
+dnl being compiled, which is reasonable year to claim the copyright.
+AC_DEFINE([COPYRIGHT_YEAR], [m4_esyscmd([date +%Y])], [year in copyright message])
+
 libusb_is_old=0
 AC_CHECK_LIB(usb-1.0, libusb_get_parent, [], [libusb_is_old=1])
 AC_CHECK_LIB(usb-1.0, libusb_get_port_number, [], [libusb_is_old=1])

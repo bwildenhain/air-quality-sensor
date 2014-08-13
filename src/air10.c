@@ -36,6 +36,16 @@
 #define USB_VENDOR_CO2_STICK	0x03eb
 #define USB_PRODUCT_CO2_STICK	0x2013
 
+#ifdef HAVE_GETOPT_LONG
+#include <getopt.h>
+
+static const struct option longopts[] = {
+  {"help", 0, NULL, 'h'},
+  {"version", 0, NULL, 'v'},
+  {NULL, 0, NULL, 0}
+};
+#endif
+
 enum led_state
 {
   GREEN = 0,
@@ -203,16 +213,68 @@ find_devices (int vendor, int product)
   return ret;
 }
 
+void
+print_help ()
+{
+  printf (("Usage: %s [OPTION]\n\
+Read the current air quality from a compatible attached sensor\n\n\
+	-h, --help          display this help and exit\n\
+        -v, --version       display version information and exit\n\n\
+Report bugs to: esperanto@benedikt-wildenhain.de\n\
+Home page: <https://github.com/bwildenhain/air-quality-sensor>\n\
+"), PACKAGE_NAME);
+}
+
+void
+print_version ()
+{
+  printf ("%s (%s) %s\n", PACKAGE, PACKAGE_NAME, VERSION);
+
+  printf (("\
+Copyright (C) %d Jan-Benedict Glaw\n\
+Copyright (C) %d Benedikt Wildenhain\n\
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\
+This is free software: you are free to change and redistribute it.\n\
+There is NO WARRANTY, to the extent permitted by law.\n"), COPYRIGHT_YEAR, COPYRIGHT_YEAR);
+}
+
 int
 main (int argc, char *argv[])
 {
   int ret;
 
+
+#ifdef HAVE_GETOPT_LONG
+  char c;
+  int option_index = 0;
+  while ((c = getopt_long (argc, argv, "hv", longopts, &option_index)) != -1)
+    {
+      switch (c)
+	{
+	case 'h':
+	  print_help ();
+	  exit (EXIT_SUCCESS);
+	  break;
+	case 'v':
+	  print_version ();
+	  exit (EXIT_SUCCESS);
+	  break;
+	case '?':
+	  print_help ();
+	  exit (EXIT_FAILURE);
+	  break;
+	}
+    }
+#else
   if (argc > 1)
     {
-      fprintf (stderr, "Usage: %s - prints current air quality\n", argv[0]);
+      fprintf (stderr,
+	       "Compiled without GNU getopt, cannot handle any command line arguments");
+      print_version ();
       exit (EXIT_FAILURE);
     }
+
+#endif
 
   ret = libusb_init (NULL);
   if (ret)

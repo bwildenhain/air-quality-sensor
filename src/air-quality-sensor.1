@@ -1,0 +1,58 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" (C) Copyright 2014 Benedikt Wildenhain <debian@benedikt-wildenhain.de>,
+.\"
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH AIR-QUALITY-SENSOR 1 "August  8, 2014"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+air-quality-sensor \- program to do something
+.SH SYNOPSIS
+.B air-quality-sensor
+.RI [ options ]
+.br
+.SH DESCRIPTION
+This manual page documents briefly the
+.B air-quality-sensor
+and
+.B bar
+commands.
+.PP
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics,
+.\" respectively.
+\fBair-quality-sensor\fP is a program that allows you to read data from
+an compatible air quality sensor.
+.PP
+The CO-20 is an easy to install sensor for monitoring air quality. This
+driver prints a list with all connected sensors and their current values
+to the commandline. Compatible sensors and further information has been
+documented on http://wiki.micasaverde.com/index.php/CO2_Sensor.
+.PP
+The air quality is displayed on the hardware token by three indicator
+lamps with the colours green (= good), yellow (= average) and red (=
+bad), the same colors are also printed by this tool.
+
+.SH OPTIONS
+These programs follow the usual GNU command line syntax, with long
+options starting with two dashes (`-').
+A summary of options is included below.
+.TP
+.B \-h, \-\-help
+Show summary of options.
+.br
+The programs are documented fully by
+.IR "The Rise and Fall of a Fooish Bar" ,
+available via the Info system.
