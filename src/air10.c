@@ -31,7 +31,7 @@
 #define LEVEL_GREEN	1000
 #define LEVEL_YELLOW	1500
 #define LEVEL_RED	4000
-#define LEVEL_BOOTUP	450
+#define LEVEL_NO_DATA	450
 
 #define USB_VENDOR_CO2_STICK	0x03eb
 #define USB_PRODUCT_CO2_STICK	0x2013
@@ -51,14 +51,14 @@ enum led_state
   GREEN = 0,
   YELLOW,
   RED,
-  BLINK,
+  NO_DATA,
 };
 
 static const char *const air_quality[] = {
   [GREEN] = "GREEN",
   [YELLOW] = "YELLOW",
   [RED] = "RED",
-  [BLINK] = "BLINK",
+  [NO_DATA] = "NO_DATA",
 };
 
 static int
@@ -144,8 +144,8 @@ read_one_sensor (struct libusb_device *dev)
     | ((unsigned char *) usb_io_buf)[2] << 0;
 
   /* Classify `value'.  */
-  if (value == LEVEL_BOOTUP)
-    colour = BLINK;
+  if (value == LEVEL_NO_DATA)
+    colour = NO_DATA;
   else if (value <= LEVEL_GREEN)
     colour = GREEN;
   else if (value <= LEVEL_YELLOW)
