@@ -13,4 +13,8 @@ with the colours green (= good), yellow (= average) and red (= bad), the same
 colors are also printed by this tool.
 
 See https://github.com/bwildenhain/air-quality-sensor for the current version.
+Signed releases are provided at
+
+  • http://thinserv2.at-inet.de/~benedikt/air-quality-sensor/src/ and
+  • https://thinserv2.at-inet.de/~benedikt/air-quality-sensor/src/.
 
