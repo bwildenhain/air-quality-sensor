@@ -19,6 +19,13 @@ then
     AC_DEFINE([LIBUSB_OLD], [yes], [Libusb is old and does not give information about topology of connected devices])
 fi
 
+
+if test $cross_compiling = no; then
+    AM_MISSING_PROG(HELP2MAN, help2man)
+else
+    HELP2MAN=:
+fi
+
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
