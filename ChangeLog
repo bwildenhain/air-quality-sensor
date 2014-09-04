@@ -1,3 +1,15 @@
+air-quality-sensor (0.1.2)
+
+  * Call help2man in Makefile.am
+
+air-quality-sensor (0.1.1)
+
+  * Use autotools
+  * Made air10.c compatible with older versions of libusb-1.0
+  * Properly formatted URL in README.md
+
+   -- Benedikt Wildenhain <debian@benedikt-wildenhain.de>  Wed Aug 13 01:38:53 2014 +0200
+
 air-quality-sensor (0.1)
 
   * Initial release

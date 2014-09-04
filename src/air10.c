@@ -220,7 +220,7 @@ print_help ()
 Read the current air quality from a compatible attached sensor\n\n\
 	-h, --help          display this help and exit\n\
         -v, --version       display version information and exit\n\n\
-Report bugs to: esperanto@benedikt-wildenhain.de\n\
+Report bugs on <https://github.com/bwildenhain/air-quality-sensor/issues> or send a mail to esperanto@benedikt-wildenhain.de\n\
 Home page: <https://github.com/bwildenhain/air-quality-sensor>\n\
 "), PACKAGE_NAME);
 }
