@@ -6,7 +6,7 @@ air_quality_sensor_SOURCES = air10.c
 
 # manpages
 man_MANS = air-quality-sensor.1
-EXTRA_DIST = $(man_MANS)
+EXTRA_DIST = $(man_MANS) manpage.include
 
 man_include = $(srcdir)/manpage.include
 
