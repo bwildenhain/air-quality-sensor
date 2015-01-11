@@ -154,17 +154,22 @@ read_one_sensor (struct libusb_device *dev)
     colour = RED;
 
   /* Output values.  */
+  printf ("Bus %03d ", libusb_get_bus_number (dev));
 #ifndef LIBUSB_OLD
 /* libusb_get_parent and libusb_get_port_number have been introduced in
  * https://github.com/libusb/libusb/blob/cfb8610242394d532778a483570089c2bed52c84/libusb/libusb.h
  * Everything from before is considered "old" in config.h
 */
   printf ("Device ");
-  for (uplink = dev; uplink; uplink = libusb_get_parent (uplink))
-    printf ("%d:", libusb_get_port_number (uplink));
+  int i = 0;
+  for (uplink = dev; uplink; uplink = libusb_get_parent (uplink), i++)
+    {
+      if (i)
+	printf (":");
+      printf ("%d", libusb_get_port_number (uplink));
+    }
 #else
-  printf ("Bus %03d Device %03d",
-	  libusb_get_bus_number (dev), libusb_get_device_address (dev));
+  printf ("Device %03d", libusb_get_device_address (dev));
 #endif
   printf (" value = %u, quality = %s\n",
 	  (unsigned int) value, air_quality[colour]);
