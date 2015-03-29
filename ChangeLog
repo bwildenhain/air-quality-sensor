@@ -1,3 +1,8 @@
+air-quality-sensor (0.1.3)
+
+  * Added --verbose (-v)
+  * --version can now be called by using -V (was -v)
+
 air-quality-sensor (0.1.2)
 
   * Call help2man in Makefile.am

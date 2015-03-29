@@ -41,7 +41,8 @@
 
 static const struct option longopts[] = {
   {"help", 0, NULL, 'h'},
-  {"version", 0, NULL, 'v'},
+  {"verbose", 0, NULL, 'v'},
+  {"version", 0, NULL, 'V'},
   {NULL, 0, NULL, 0}
 };
 #endif
@@ -62,13 +63,13 @@ static const char *const air_quality[] = {
 };
 
 static int
-read_one_sensor (struct libusb_device *dev)
+read_one_sensor (struct libusb_device *dev, int verbose)
 {
   int ret;
   uint16_t value;
   int len;
   enum led_state colour;
-  struct libusb_device_handle *devh;
+  struct libusb_device_handle *devh, *devh_parent;
   char driver_name[DRIVER_NAME_LEN] = "";
   unsigned char usb_io_buf[USB_BUF_LEN] = "\x40\x68\x2a\x54"
     "\x52\x0a\x40\x40" "\x40\x40\x40\x40" "\x40\x40\x40\x40";
@@ -154,12 +155,40 @@ read_one_sensor (struct libusb_device *dev)
     colour = RED;
 
   /* Output values.  */
-  printf ("Bus %03d ", libusb_get_bus_number (dev));
 #ifndef LIBUSB_OLD
 /* libusb_get_parent and libusb_get_port_number have been introduced in
  * https://github.com/libusb/libusb/blob/cfb8610242394d532778a483570089c2bed52c84/libusb/libusb.h
  * Everything from before is considered "old" in config.h
 */
+
+
+  if (verbose)
+    {
+      uplink = libusb_get_parent (dev);
+      struct libusb_device_descriptor desc;
+      libusb_get_device_descriptor (uplink, &desc);
+
+      unsigned char strDesc[256];
+
+      ret = libusb_open (uplink, &devh_parent);
+      if (ret)
+	{
+	  fprintf (stderr, "Failed to libusb_open(uplink, ...)\n");
+	  goto out;
+	}
+
+      if (desc.iSerialNumber > 0)
+	{
+	  ret = libusb_get_string_descriptor_ascii
+	    (devh_parent, desc.iSerialNumber, strDesc, 256);
+
+	  if (ret < 0)
+	    goto out;
+
+	  printf ("Serial %s ", strDesc);
+	}
+    }
+
   printf ("Device ");
   int i = 0;
   for (uplink = dev; uplink; uplink = libusb_get_parent (uplink), i++)
@@ -169,6 +198,7 @@ read_one_sensor (struct libusb_device *dev)
       printf ("%d", libusb_get_port_number (uplink));
     }
 #else
+  printf ("Bus %03d ", libusb_get_bus_number (dev));
   printf ("Device %03d", libusb_get_device_address (dev));
 #endif
   printf (" value = %u, quality = %s\n",
@@ -186,7 +216,7 @@ out:
 }
 
 static int
-find_devices (int vendor, int product)
+find_devices (int vendor, int product, int verbose)
 {
   int ret = 0, ret2;
   struct libusb_device **devs;
@@ -208,7 +238,7 @@ find_devices (int vendor, int product)
 	  else
 	    {
 	      if (desc.idVendor == vendor && desc.idProduct == product)
-		ret |= read_one_sensor (dev);
+		ret |= read_one_sensor (dev, verbose);
 	    }
 	}
 
@@ -224,8 +254,9 @@ print_help ()
   printf (("Usage: %s [OPTION]\n\
 Read the current air quality from a compatible attached sensor\n\n\
 	-h, --help          display this help and exit\n\
-        -v, --version       display version information and exit\n\n\
-Report bugs on <https://github.com/bwildenhain/air-quality-sensor/issues> or send a mail to esperanto@benedikt-wildenhain.de\n\
+        -v, --verbose	    be verbose\n\n\
+        -V, --version       display version information and exit\n\n\
+Report bugs on <https://github.com/bwildenhain/air-quality-sensor/issues> or send a mail to air-quality-sensor@benedikt-wildenhain.de\n\
 Home page: <https://github.com/bwildenhain/air-quality-sensor>\n\
 "), PACKAGE_NAME);
 }
@@ -236,23 +267,23 @@ print_version ()
   printf ("%s (%s) %s\n", PACKAGE, PACKAGE_NAME, VERSION);
 
   printf (("\
-Copyright (C) %d Jan-Benedict Glaw\n\
+Copyright (C) 2014 Jan-Benedict Glaw\n\
 Copyright (C) %d Benedikt Wildenhain\n\n\
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
-There is NO WARRANTY, to the extent permitted by law.\n"), COPYRIGHT_YEAR, COPYRIGHT_YEAR);
+There is NO WARRANTY, to the extent permitted by law.\n"), COPYRIGHT_YEAR);
 }
 
 int
 main (int argc, char *argv[])
 {
-  int ret;
+  int ret, verbose = 0;
 
 
 #ifdef HAVE_GETOPT_LONG
   char c;
   int option_index = 0;
-  while ((c = getopt_long (argc, argv, "hv", longopts, &option_index)) != -1)
+  while ((c = getopt_long (argc, argv, "hVv", longopts, &option_index)) != -1)
     {
       switch (c)
 	{
@@ -260,9 +291,12 @@ main (int argc, char *argv[])
 	  print_help ();
 	  exit (EXIT_SUCCESS);
 	  break;
-	case 'v':
+	case 'V':
 	  print_version ();
 	  exit (EXIT_SUCCESS);
+	  break;
+	case 'v':
+	  verbose = 1;
 	  break;
 	case '?':
 	  print_help ();
@@ -288,7 +322,7 @@ main (int argc, char *argv[])
       exit (EXIT_FAILURE);
     }
 
-  ret = find_devices (USB_VENDOR_CO2_STICK, USB_PRODUCT_CO2_STICK);
+  ret = find_devices (USB_VENDOR_CO2_STICK, USB_PRODUCT_CO2_STICK, verbose);
 
   libusb_exit (NULL);
 
