@@ -1,4 +1,4 @@
-AC_INIT([air-quality-sensor], [0.1.3], [air-quality-sensor@benedikt-wildenhain.de])
+AC_INIT([air-quality-sensor], [0.1.4], [air-quality-sensor@benedikt-wildenhain.de])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_PROG_CC
 AM_PROG_CC_C_O
@@ -8,7 +8,12 @@ AC_CHECK_FUNCS(getopt_long)
 
 dnl Copyright will apply as long as these sources are in use, e.g., are
 dnl being compiled, which is reasonable year to claim the copyright.
-AC_DEFINE([COPYRIGHT_YEAR], [m4_esyscmd([date +%Y])], [year in copyright message])
+if test "x$SOURCE_DATE_EPOCH" = "x"; then
+    year=m4_esyscmd([date +%Y])
+else
+    year=`date -u -d "@$SOURCE_DATE_EPOCH" "+%Y" 2>/dev/null || date -u -r "$SOURCE_DATE_EPOCH" "+%Y" 2>/dev/null || date -u "+%Y"`
+fi
+AC_DEFINE_UNQUOTED([COPYRIGHT_YEAR], ["$year"], [year in copyright message])
 
 libusb_is_old=0
 AC_CHECK_LIB(usb-1.0, libusb_get_parent, [], [libusb_is_old=1])
