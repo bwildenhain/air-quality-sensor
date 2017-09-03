@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2017 Benedikt Wildenhain -->
+<component type="console-application">
+  <id>de.benedikt-wildenhain.air-quality-sensor</id>
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0+</project_license>
+
+  <name>Air Quality Sensor</name>
+  <summary>user space driver for AppliedSensor's Indoor Air Monitor</summary>
+
+  <description>
+    <p>
+      air-quality-sensor is a commandline utility to read sensor data
+      from usb keys using AppliedSensor's Indoor Air Monitor to give you
+      an indication about the air quality around the sensor.
+    </p>
+  </description>
+
+  <url type="homepage">https://github.com/bwildenhain/air-quality-sensor</url>
+
+  <provides>
+    <binary>air-quality-sensor</binary>
+    <modalias>usb:v03EBp2013d*</modalias>
+  </provides>
+</component>

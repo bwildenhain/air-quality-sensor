@@ -92,7 +92,7 @@ read_one_sensor (struct libusb_device *dev, int verbose)
       ret = libusb_detach_kernel_driver (devh, 0 /*intrf */ );
       if (ret)
 	{
-	  fprintf (stderr, "Failed to detatch kernel driver.\n");
+	  fprintf (stderr, "Failed to detach kernel driver.\n");
 	  ret = -2;
 	  goto out;
 	}

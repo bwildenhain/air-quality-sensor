@@ -1,6 +1,10 @@
+air-quality-sensor (0.1.4.1)
+
+  * Added appstream data
+
 air-quality-sensor (0.1.4)
 
-  * Make build reproducable
+  * Make build reproducible
 
 air-quality-sensor (0.1.3)
 

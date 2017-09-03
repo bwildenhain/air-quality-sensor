@@ -6,7 +6,13 @@ air_quality_sensor_SOURCES = air10.c
 
 # manpages
 man_MANS = air-quality-sensor.1
-EXTRA_DIST = $(man_MANS) manpage.include
+
+# Appdata files
+
+appdatadir = $(datadir)/appdata
+appdata_DATA = de.benedikt-wildenhain.air-quality-sensor.metainfo.xml
+
+EXTRA_DIST = $(man_MANS) manpage.include $(appdata_DATA)
 
 man_include = $(srcdir)/manpage.include
 

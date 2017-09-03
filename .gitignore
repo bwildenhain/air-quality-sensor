@@ -1,7 +1,20 @@
 air
 air01
 air10
-=======
+
+Makefile.in
+aclocal.m4
+autom4te.cache/
+build/
+compile
+config.h.in
+configure
+depcomp
+install-sh
+missing
+src/Makefile.in
+src/air-quality-sensor.1
+
 # Object files
 *.o
 *.ko
@@ -25,3 +38,7 @@ air10
 *.i*86
 *.x86_64
 *.hex
+
+# Backup files
+*~
+*.swp

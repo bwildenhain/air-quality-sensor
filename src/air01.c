@@ -77,7 +77,7 @@ read_one_sensor (struct usb_device *dev)
 			 "trying to unbind it.\n", driver_name);
 		ret = usb_detach_kernel_driver_np (devh, 0/*intrf*/);
 		if (ret) {
-			fprintf (stderr, "Failed to detatch kernel driver.\n");
+			fprintf (stderr, "Failed to detach kernel driver.\n");
 			ret = -2;
 			goto out;
 		}
