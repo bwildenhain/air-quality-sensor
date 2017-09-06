@@ -1,4 +1,4 @@
-AC_INIT([air-quality-sensor], [0.1.4.1], [air-quality-sensor@benedikt-wildenhain.de])
+AC_INIT([air-quality-sensor], [0.1.4.2], [air-quality-sensor@benedikt-wildenhain.de])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_PROG_CC
 AM_PROG_CC_C_O

@@ -9,8 +9,8 @@ man_MANS = air-quality-sensor.1
 
 # Appdata files
 
-appdatadir = $(datadir)/appdata
-appdata_DATA = de.benedikt-wildenhain.air-quality-sensor.metainfo.xml
+metainfodir = $(datadir)/metainfo
+metainfo_DATA = de.benedikt-wildenhain.air-quality-sensor.metainfo.xml
 
 EXTRA_DIST = $(man_MANS) manpage.include $(appdata_DATA)
 

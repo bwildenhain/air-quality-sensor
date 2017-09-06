@@ -1,3 +1,7 @@
+air-quality-sensor (0.1.4.2)
+
+  * Moved appstream data to PREFIX/share/metainfo/
+
 air-quality-sensor (0.1.4.1)
 
   * Added appstream data
